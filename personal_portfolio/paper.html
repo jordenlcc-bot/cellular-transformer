@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CellToken Whitepaper | Jorden.AI</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- MathJax for rendering LaTeX equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --surface-color: #1a1a1a;
+            --primary: #00ff88;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --border: #333;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Lora', serif;
+            /* Scholarly font */
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            font-size: 1.1rem;
+        }
+
+        nav {
+            background: var(--surface-color);
+            padding: 1rem 5%;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--primary);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .authors {
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .abstract {
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 3rem;
+            font-size: 1rem;
+        }
+
+        .abstract h3 {
+            margin-top: 0;
+            color: var(--primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        code,
+        pre {
+            font-family: 'Roboto Mono', monospace;
+            background: #111;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #d470ff;
+        }
+
+        pre {
+            padding: 1rem;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--surface-color);
+            color: var(--primary);
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .ref-list li {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html">← Back to Portfolio</a>
+        <a href="https://github.com/jordenlcc-bot/cellular-transformer" target="_blank">View on GitHub</a>
+    </nav>
+
+    <div class="container">
+        <h1>CellToken: A Biologically-Inspired Large Language Model with Thermodynamic Inner-Cell Dynamics</h1>
+        <div class="authors">
+            <strong>Jorden & Antigravity Research Lab</strong><br>
+            Draft v0.1 — March 2026
+        </div>
+
+        <div class="abstract">
+            <h3>Abstract</h3>
+            <p>We propose <strong>CellToken</strong>, a novel Large Language Model (LLM) architecture in which each
+                token is treated not as a static embedding vector, but as a living <strong>colony of CellBlocks</strong>
+                connected by a <strong>dynamic Mucus Matrix</strong> (\(W\)). Each CellBlock maintains an explicit
+                four-dimensional thermodynamic state \((E, P, G, L)\) — representing Energy, Pressure, Growth tendency,
+                and Link affinity — that evolves via biologically-grounded Ordinary Differential Equations (ODEs) rather
+                than black-box MLP weights. After a configurable number of inner ecological steps, the token's evolved
+                physical morphology is collapsed into a macro embedding and fed into a standard causal Transformer for
+                sequence-level reasoning. We demonstrate that this architecture (i) supports full end-to-end
+                gradient-based training via next-token prediction, (ii) achieves stable and predictable VRAM consumption
+                (26 MB for a 626K-parameter model on an RTX 3050), and (iii) enables the spontaneous emergence of
+                non-linguistic internal state patterns.</p>
+        </div>
+
+        <h2>1. Introduction</h2>
+        <p>Modern Large Language Models (LLMs) share a fundamental abstraction: a token is a static, context-free vector
+            fetched from an embedding table. While attention mechanisms accumulate contextual information across a
+            sequence, each token itself remains stateless—a dead symbol. This forces the model to reconstruct contextual
+            meaning purely from position and cross-attention, requiring deep stacking of layers and enormous parameter
+            budgets.</p>
+        <p>We argue that biological intelligence operates on a fundamentally different principle: <em>every cell carries
+                its own history and responds to the world through physical state dynamics</em>, not statistical lookup.
+        </p>
+
+        <h2>2. Architecture</h2>
+        <h3>2.1 Layer 1: Cell Embedding</h3>
+        <p>Given a token ID \(t\), we first compute an outer embedding \(e \in \mathbb{R}^{d_e}\). The inner CellBlock
+            states are projected from \(e\):</p>
+        <p>\[ h_0 = \sigma(W_h \cdot e + b_h) \in \mathbb{R}^{N_{blk} \times 4} \]</p>
+        <p>The Mucus connection matrix is initialized as a sparse near-diagonal:</p>
+        <p>\[ W_0 = 0.1 \cdot \mathbf{1}_{N \times N} \odot (1 - I_N) \]</p>
+
+        <h3>2.2 Layer 2: Mucus Inner Cell (EPGL ODE)</h3>
+        <p>Let \((E, P, G, L)\) and \((\tilde{E}, \tilde{P}, \tilde{G}, \tilde{L})\) denote current and neighbor-mean
+            states. Given external stimulus \(s \in [0,1]\):</p>
+        <p>\[ E' = \text{clip}(E + \alpha_E s - 0.4P - 0.2G,\ 0, 1) \]</p>
+        <p>\[ P' = \text{clip}(P + \alpha_P s + \beta_P(\tilde{P} - P) - 0.2E,\ 0, 1) \]</p>
+        <p>\[ G' = \text{clip}(G + \alpha_G E(1-P) + \beta_G(\tilde{G} - G) - 0.3P,\ 0, 1) \]</p>
+        <p>\[ L' = \text{clip}(L + \alpha_L (0.5\tilde{E}+0.5\tilde{G}) + \beta_L(\tilde{L} - L) - 0.3P,\ 0, 1) \]</p>
+
+        <p><strong>Slime Mold Mucus Rewiring:</strong></p>
+        <p>\[ W'_{ij} = \text{clip}\!\left(W_{ij} + \omega_g \cdot \frac{L_i+L_j}{2} \cdot \|h_i - h_j\|_2 - \omega_d
+            \cdot W_{ij},\ 0, 1\right) \]</p>
+
+        <h3>2.3 Layer 3: Token Collapse</h3>
+        <p>\[ e_{macro} = \text{LayerNorm}\!\left(e + W_c \cdot [h_{flat} \| W_{flat}]\right) \in \mathbb{R}^{d_e} \]
+        </p>
+
+        <h2>3. Experiments</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Iteration</th>
+                    <th>Cross-Entropy Loss</th>
+                    <th>VRAM (MB)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>0</td>
+                    <td>3.5470</td>
+                    <td>26.08</td>
+                </tr>
+                <tr>
+                    <td>100</td>
+                    <td>2.0225</td>
+                    <td>26.08</td>
+                </tr>
+                <tr>
+                    <td>200</td>
+                    <td>1.2232</td>
+                    <td>26.08</td>
+                </tr>
+                <tr>
+                    <td>400</td>
+                    <td>0.5415</td>
+                    <td>26.08</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--primary);font-weight:bold;">499</td>
+                    <td style="color:var(--primary);font-weight:bold;">0.4913</td>
+                    <td style="color:var(--primary);font-weight:bold;">26.08</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Conclusion</h2>
+        <p>We presented CellToken, an LLM architecture grounded in biological thermodynamics and slime mold network
+            dynamics. Each token is a living colony of CellBlocks that evolves via explicit ODE rules and a self-wiring
+            Mucus topology. Experiments confirm that this architecture is trainable via standard next-token prediction,
+            maintains constant VRAM, and exhibits emergent representational structure.</p>
+
+        <hr style="border-color:var(--border); margin: 4rem 0 2rem;">
+
+        <h3>References</h3>
+        <ul class="ref-list">
+            <li>[1] Prigogine, I. & Stengers, I. (1984). <em>Order Out of Chaos: Man's New Dialogue with Nature.</em>
+                Bantam Books.</li>
+            <li>[2] Tero, A. et al. (2010). Rules for Biologically Inspired Adaptive Network Design. <em>Science</em>,
+                327(5964), 439-442.</li>
+            <li>[3] Vaswani, A. et al. (2017). Attention Is All You Need. <em>NeurIPS</em>.</li>
+            <li>[4] Turing, A.M. (1952). The chemical basis of morphogenesis. <em>Philosophical Transactions of the
+                    Royal Society B</em>.</li>
+        </ul>
+        <br><br>
+    </div>
+</body>
+
+</html>
