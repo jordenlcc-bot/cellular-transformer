@@ -299,6 +299,13 @@ nav .nav-links a:hover {
     cursor: not-allowed;
 }
 
+.card-links-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
 /* --- FOOTER --- */
 footer {
     text-align: center;
