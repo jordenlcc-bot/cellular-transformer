@@ -79,6 +79,10 @@ class SlimeMoldTransformer(nn.Module):
         self.embedding = CellularTokenEmbedding(vocab_size, num_organelles, d_organelle)
         self.pos_embedding = nn.Embedding(1024, self.d_model) # Max seq len 1024
         
+        # Precompute position indices and causal mask as buffers
+        self.register_buffer("positions", torch.arange(1024).unsqueeze(0))
+        self.register_buffer("mask", self.generate_square_subsequent_mask(1024))
+
         # Micro layer (Inside the cell)
         self.cellular_layer = CellularAttention(d_organelle, num_heads=4)
         
@@ -109,11 +113,10 @@ class SlimeMoldTransformer(nn.Module):
         seq_state = cellular_state.view(batch_size, seq_len, self.d_model)
         
         # Add positional encoding
-        positions = torch.arange(0, seq_len, device=x.device).unsqueeze(0)
-        seq_state = seq_state + self.pos_embedding(positions)
+        seq_state = seq_state + self.pos_embedding(self.positions[:, :seq_len])
         
         # Create causal mask for language modeling
-        mask = self.generate_square_subsequent_mask(seq_len).to(x.device)
+        mask = self.mask[:seq_len, :seq_len]
         
         # 4. Macro-Computation (Between Tokens)
         for layer in self.macro_layers:
