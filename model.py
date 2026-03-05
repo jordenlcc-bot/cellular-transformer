@@ -95,6 +95,11 @@ class SlimeMoldTransformer(nn.Module):
         return mask
 
     def forward(self, x):
+        if not isinstance(x, torch.Tensor):
+            raise TypeError(f"Expected input x to be a torch.Tensor, but got {type(x)}")
+        if x.dim() != 2:
+            raise ValueError(f"Expected input x to be 2D [batch, seq_len], but got {x.dim()}D with shape {x.shape}")
+
         batch_size, seq_len = x.shape
         
         # 1. Expand to Cellular State: [batch, seq, num_org, d_org]
