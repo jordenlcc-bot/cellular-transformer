@@ -27,6 +27,10 @@ class StandardTransformer(nn.Module):
         self.embedding = nn.Embedding(vocab_size, d_model)
         self.pos_embedding = nn.Embedding(1024, d_model) # Max seq len 1024
         
+        # Precompute position indices and causal mask as buffers
+        self.register_buffer("positions", torch.arange(1024).unsqueeze(0))
+        self.register_buffer("mask", self.generate_square_subsequent_mask(1024))
+
         # Purely Macro Deep Layers
         self.macro_layers = nn.ModuleList([
             StandardAttentionBlock(d_model, num_heads=macro_heads) for _ in range(macro_layers)
@@ -51,11 +55,10 @@ class StandardTransformer(nn.Module):
         seq_state = self.embedding(x)
         
         # Positional Encoding
-        positions = torch.arange(0, seq_len, device=x.device).unsqueeze(0)
-        seq_state = seq_state + self.pos_embedding(positions)
+        seq_state = seq_state + self.pos_embedding(self.positions[:, :seq_len])
         
         # Mask
-        mask = self.generate_square_subsequent_mask(seq_len).to(x.device)
+        mask = self.mask[:seq_len, :seq_len]
         
         # Macro layers ONLY
         for layer in self.macro_layers:
